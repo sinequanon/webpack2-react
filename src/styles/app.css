@@ -1,0 +1,8 @@
+@import 'elements.css';
+
+.appMountPoint {
+  background: transparent;
+  flex-direction: column;
+  flex: 2;
+  flex-basis: 200px;
+}

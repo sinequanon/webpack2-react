@@ -3,6 +3,7 @@ import ReactDOM, { unmountComponentAtNode } from 'react-dom'
 import { AppContainer } from 'react-hot-loader' // Support hot loading
 
 import Root from './components/Root'
+import './styles/app.css'
 
 const DOM_MOUNT_POINT = document.querySelector('.appMountPoint')
 

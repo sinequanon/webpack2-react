@@ -1,0 +1,5 @@
+$backgroundcolor: red;
+
+h1 {
+  background-color: $backgroundcolor;
+}

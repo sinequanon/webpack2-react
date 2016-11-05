@@ -3,6 +3,15 @@ import path from 'path'
 import merge from 'webpack-merge'
 import HtmlWebPackPlugin from 'html-webpack-plugin'
 
-import commonConfig from './webpack.common'
+import { cssLoaders, commonConfig } from './webpack.common'
 
-export default merge(commonConfig)
+const merged = merge({
+  entry: {
+    app: [
+      'react-hot-loader/patch'
+    ]
+  }
+}, commonConfig)
+
+console.log('merged', merged)
+export default merged
