@@ -15,23 +15,37 @@ PRE-PUSH OK
 -------------------------------------------------${reset}"
 FAIL=0
 
+
+
+echo $'\360\237\217\203 Running javascript linter...'
 # commit hook for javascript
 npm run lint:js
 if [ $? -ne 0 ]; then
     let "FAIL+=1"
 fi
 
+echo $'\360\237\217\203 Running style linter...'
 # commit hook for styles
 npm run lint:css
 if [ $? -ne 0 ]; then
     let "FAIL+=1"
 fi
 
+echo $'\360\237\217\203 Running tests...'
+# Find root of git project
+BASEDIR=$(git rev-parse --show-toplevel)
+$BASEDIR/node_modules/.bin/mocha
+if [ $? -ne 0 ]; then
+    let "FAIL+=1"
+fi
+
 # Fail if non-zero result
 if [[ $FAIL > 0 ]]; then
+    echo $'\360\237\230\242 \360\237\221\216'
     echo "${errorBanner}"
     exit 1
 else
+    echo $'\360\237\230\203 \360\237\215\273 \360\237\215\276'
     echo "${successBanner}"
     exit 0
 fi
