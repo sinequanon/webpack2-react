@@ -1,8 +1,10 @@
 @import 'elements.css';
 
-.appMountPoint {
-  background: transparent;
-  flex-direction: column;
-  flex: 2;
-  flex-basis: 200px;
+.navigation {
+  display: flex;
+  width: 100px;
+}
+
+.navlink {
+  flex: 1;
 }

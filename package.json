@@ -5,6 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --debug --config ./config/webpack.config.babel.js --progress --inline --hot --history-api-fallback --content-base ./tmp",
+    "git:unpushed-files": "git ls-files",
+    "git:unpushed-of-type": "npm run -s git:unpushed-files | grep",
+    "lint:js": "npm run -s git:unpushed-of-type -- js$ | xargs eslint",
+    "lint:css": "npm run -s git:unpushed-of-type -- css$ | xargs stylelint",
     "prod": "NODE_ENV=production webpack --config ./config/webpack.config.babel.js --progress",
     "start": "npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,6 +21,7 @@
     "react-redux": "^4.4.5",
     "react-router": "v4.0.0-alpha.5",
     "redux": "^3.6.0",
+    "redux-form": "^6.2.0",
     "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
@@ -44,6 +49,7 @@
     "postcss-smart-import": "^0.5.1",
     "precss": "^1.4.0",
     "react-hot-loader": "v3.0.0-beta.6",
+    "redux-logger": "^2.7.4",
     "style-loader": "^0.13.1",
     "stylelint": "^7.5.0",
     "stylelint-config-standard": "^14.0.0",
