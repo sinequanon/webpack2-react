@@ -17,6 +17,11 @@ import precss from 'precss'
 import postcssImport from 'postcss-smart-import'
 // Reporter for postcss process
 import postcssReporter from 'postcss-reporter'
+// Linting for styles
+import stylelintPlugin from 'stylelint-webpack-plugin'
+// Hook into notification systems so we don't have to constantly monitor the 
+// terminal
+import webpackNotifierPlugin from 'webpack-notifier'
 
 // Webpack 2 now allows passing the -p parameter which auto sets NODE_ENV to
 // 'production'. While convenient, it isn't explicit so we manually set the 
@@ -148,6 +153,58 @@ export const plugins = (() => {
       // warnings will fail to emit anything to the build
       new webpack.NoErrorsPlugin()
     ])
+  } else {
+    currentPlugins = currentPlugins.concat([
+      // Add linting to CSS using stylelint. We are extending
+      // stylelint-config-standard
+      new stylelintPlugin({
+        syntax: 'scss',
+        files: ['**/*.css']
+      }),
+      new webpackNotifierPlugin()
+    ])
   }
   return currentPlugins
+})()
+
+export const rules = (() => {
+  let currentRules = [
+      {
+        test    : /\.jsx?$/,
+        exclude : /node_modules/,
+        loader : 'babel',
+        options : babelOptions
+      },
+      {
+        test   : /\.s?css$/,
+        loader : styleLoader
+      },
+      {
+        // Image assets
+        test   : [/\.png/, /\.jpg$/, /\.gif$/],
+        // Any image assets will be autoconverted to inline base64
+        // unless they are over the limit specified in the query
+        // parameter. If the assets is over the limit, the
+        // file-loader takes over and will emit the file using the
+        // naming pattern specified. name options include [path]
+        // [name] [hash] [ext] In the case below, we are telling
+        // the loader to emit the file in the static directory
+        // using the file name followed by the hash and extension.
+        loader : 'url?limit=1&name=static/[name]-[hash].[ext]'
+      }
+    ]
+
+  if (!IS_PROD) {
+    // Run js code through eslint. This also could have been written
+    // as an additional loader in the loaders section for js* files
+    // eg 'babel?presets[]...!eslint'
+    currentRules = currentRules.concat([{
+      test    : /\.jsx?$/,
+      exclude : /node_modules/,
+      enforce : 'pre',
+      loader  : 'eslint'
+    }])
+  }
+
+  return currentRules
 })()

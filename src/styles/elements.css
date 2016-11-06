@@ -2,6 +2,5 @@ $backgroundcolor: beige;
 
 h1 {
   background-color: $backgroundcolor;
-  /* background-color: gold; */
   background-image: url('../assets/filestage.png');
 }

@@ -1,15 +1,16 @@
 import React from 'react'
 import ReactDOM, { unmountComponentAtNode } from 'react-dom'
-import { AppContainer } from 'react-hot-loader' // Support hot loading
+// Support hot loading
+import { AppContainer } from 'react-hot-loader'  /* eslint import/no-extraneous-dependencies: 0 */
 
 import Root from './components/Root'
 import './styles/app.css'
 
 const DOM_MOUNT_POINT = document.querySelector('.appMountPoint')
 
-const render = (mountPoint => {
-  return appRoot => ReactDOM.render(appRoot, mountPoint)
-})(DOM_MOUNT_POINT)
+const render = (mountPoint =>
+  appRoot => ReactDOM.render(appRoot, mountPoint)
+)(DOM_MOUNT_POINT)
 
 render(<AppContainer><Root/></AppContainer>)
 
