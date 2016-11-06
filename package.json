@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --debug --config ./config/webpack.config.babel.js --progress --inline --hot --history-api-fallback --content-base ./tmp",
-    "git:unpushed-files": "git ls-files",
+    "git:unpushed-files": "git diff-tree --no-commit-id --name-only -r @{u}..",
     "git:unpushed-of-type": "npm run -s git:unpushed-files | grep",
     "lint:js": "npm run -s git:unpushed-of-type -- js$ | xargs eslint",
     "lint:css": "npm run -s git:unpushed-of-type -- css$ | xargs stylelint",
