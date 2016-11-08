@@ -172,12 +172,15 @@ export const plugins = (() => {
 
 export const rules = (() => {
   let currentRules = [
+    // Loaders in webpack are read from right to left
+    // Transpiles our JS files
     {
       test: /\.jsx?$/,
       exclude: /node_modules/,
       loader: 'babel',
       options: babelOptions
     },
+    // Convert from sass -> postcss -> css -> style
     {
       test: /\.s?css$/,
       loader: styleLoader
@@ -198,9 +201,7 @@ export const rules = (() => {
   ]
 
   if (!IS_PROD) {
-    // Run js code through eslint. This also could have been written
-    // as an additional loader in the loaders section for js* files
-    // eg 'babel?presets[]...!eslint'
+    // Run js code through eslint
     currentRules = currentRules.concat([{
       test: /\.jsx?$/,
       exclude: /node_modules/,

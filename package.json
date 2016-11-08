@@ -10,20 +10,26 @@
     "git:unpushed-of-type": "npm run -s git:unpushed-files | grep",
     "lint:js": "npm run -s git:unpushed-of-type -- js$ | xargs eslint",
     "lint:css": "npm run -s git:unpushed-of-type -- css$ | xargs stylelint",
-    "prod": "NODE_ENV=production webpack --config ./config/webpack.config.babel.js --progress",
+    "prod:compile-server": "DEBUG=webpack rm -rf dist tmp && webpack --progress --config ./config/webpack.server.config.babel.js ",
+    "prod:compile-client": "webpack --config ./config/webpack.config.babel.js --progress",
+    "prod:run-server": "DEBUG=server node tmp/server.bundle.js",
+    "prod": "NODE_ENV=production rm -rf dist tmp && npm run prod:compile-server && npm run prod:compile-client && npm run prod:run-server",
     "start": "npm run dev",
     "test": "mocha"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "compression": "^1.6.2",
+    "debug": "^2.3.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-redux": "^4.4.5",
     "react-router": "v4.0.0-alpha.5",
     "redux": "^3.6.0",
     "redux-form": "^6.2.0",
-    "redux-thunk": "^2.1.0"
+    "redux-thunk": "^2.1.0",
+    "restify": "^4.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.18.2",
