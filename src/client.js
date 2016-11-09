@@ -24,9 +24,9 @@ if (module.hot) { // This only runs in DEV
   module.hot.accept('./components/Root', () => {
     // Reload and rename the root module. You cannot reuse the Root
     // variable. The inexplicable will happen if you do.
-    const HotRoot = require('./components/Root').default   // eslint-disable-line
+    const HotRoot = require('./components/Root').default  // eslint-disable-line
     // Prevent the hot reloading error from react-router
     unmountComponentAtNode(DOM_MOUNT_POINT)
-    render(<AppContainer><BrowserContainer><HotRoot/></BrowserContainer></AppContainer>)
+    render(<AppContainer><BrowserRouter><HotRoot/></BrowserRouter></AppContainer>)
   })
 }
