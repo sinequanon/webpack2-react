@@ -50,15 +50,12 @@
         // Assumes React is always in scope so we can import React and not have
         // errors or warnings if we don't explicitly use it
         "react/react-in-jsx-scope" : 1,
-        //"indent" : [ "warn", 4 ],
         // Class methods that do not reference 'this' will normally trigger this warning
-        "class-methods-use-this" : 0,
+        "class-methods-use-this" : 1,
         // Use ES6 templates instead of string concatenation
         "prefer-template" : 1,
         // Turn off max length of individual lines
         "max-len" : 0,
-        // Enable optional dangling commas only if multi-line.
-        "comma-dangle" : 0,
         // Warn if using semicolons.
         // See the following for reasoning:
         // http://blog.izs.me/post/2353458699/an-open-letter-to-javascript-leaders-regarding

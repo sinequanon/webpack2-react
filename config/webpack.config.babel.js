@@ -1,11 +1,11 @@
 import path from 'path'
 
-import { appEntry, devtool, plugins, rules } from './webpack.common'
+import { appEntry, devServer, devtool, plugins, rules } from './webpack.common'
 
 export default {
   entry: {
     app: appEntry,
-    common: path.resolve(__dirname, '../src', 'common.js')
+    common: path.resolve(__dirname, '../src', 'common.js'),
   },
   devtool,
   output: {
@@ -13,14 +13,15 @@ export default {
     filename: '[name].js',
     chunkFilename: '[id].js',
     // The logical path in the browser
-    publicPath: '/'
+    publicPath: '/',
   },
   resolve: {
-    modules: ['node_modules']
+    modules: ['node_modules'],
   },
   module: {
-    rules
+    rules,
   },
+  devServer,
   target: 'web',
-  plugins
+  plugins,
 }

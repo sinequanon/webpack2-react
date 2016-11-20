@@ -12,5 +12,5 @@ const dummyReducer = (state = {}, action) => {
 
 export default combineReducers({
   dummyReducer,
-  form: formReducer // important to mount the reducer as 'form'
+  form: formReducer, // important to mount the reducer as 'form'
 })

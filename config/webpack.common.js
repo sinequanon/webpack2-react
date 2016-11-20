@@ -14,18 +14,25 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import OptimizeCssAssets from 'optimize-css-assets-webpack-plugin'
 // Plugin for using cssnext features
 import postcssnext from 'postcss-cssnext'
-// Use precss as replacement for sass lib due to apparent speed up and much
-// faster compilation using postcss
-import precss from 'precss'
-// Include postcss-smart-import to fix a hot loading bug in imported css files
-import postcssImport from 'postcss-smart-import'
-// Reporter for postcss process
-import postcssReporter from 'postcss-reporter'
 // Linting for styles
 import StylelintPlugin from 'stylelint-webpack-plugin'
 // Hook into notification systems so we don't have to constantly monitor the
 // terminal
 import WebpackNotifierPlugin from 'webpack-notifier'
+// Include postcss-smart-import to fix a hot loading bug in imported css files
+import postcssImport from 'postcss-smart-import'
+// Reporter for postcss process
+import postcssReporter from 'postcss-reporter'
+// Sass-like css variables
+import postcssSimpleVars from 'postcss-simple-vars'
+// Color functions
+import postcssSassColorFunctions from 'postcss-sass-color-functions'
+// Mixins
+import postcssMixins from 'postcss-mixins'
+// Nested css
+import postcssNested from 'postcss-nested'
+// Reference any ancestors in css
+import postcssNestedAncestors from 'postcss-nested-ancestors'
 
 // Webpack 2 now allows passing the -p parameter which auto sets NODE_ENV to
 // 'production'. While convenient, it isn't explicit so we manually set the
@@ -59,20 +66,20 @@ const styleLoader = (() => {
   // Style loaders normally used in DEVELOPMENT
   const styleLoaders = [
     {
-      loader: 'style'
+      loader: 'style',
     },
     {
       loader: 'css',
       query: {
-        sourceMap: true
-      }
+        sourceMap: true,
+      },
     },
     {
       loader: 'postcss',
       query: {
-        sourceMap: true
-      }
-    }
+        sourceMap: true,
+      },
+    },
   ]
 
   let currentLoader = styleLoaders
@@ -85,7 +92,7 @@ const styleLoader = (() => {
     // In PRODUCTION extract the CSS
     currentLoader = ExtractTextPlugin.extract({
       fallbackLoader: 'style',
-      loader: styleLoaders
+      loader: styleLoaders,
     })
   }
   return currentLoader
@@ -101,26 +108,31 @@ export const plugins = (() => {
     // info, so we must explicitly set the environment variable with the
     // plugin.
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
     new webpack.LoaderOptionsPlugin({
       options: {
         context: '/',
         postcss: webpack => // eslint-disable-line
           [
-            postcssImport({ skipDuplicates: true }),
-            // Allow sass syntax in css
-            precss,
+            postcssImport({ addDependencyTo: webpack }),
+            postcssMixins(),
+            postcssSimpleVars(),
+            postcssSassColorFunctions(),
+            postcssNestedAncestors(),
+            postcssNested(),
             // Allow next gen css syntax
-            postcssnext(),
+            postcssnext({
+              browsers: ['last 2 Chrome versions'],
+            }),
             // postcss logging
             postcssReporter({ clearMessages: true }),
-          ]
-      }
+          ],
+      },
     }),
     new webpack.optimize.CommonsChunkPlugin({
       minChunks: 2,
-      name: 'common'
+      name: 'common',
     }),
     new webpack.NamedModulesPlugin(),
     new HtmlWebPackPlugin({
@@ -137,7 +149,7 @@ export const plugins = (() => {
       // Source template to use for the emitted asset
       template: 'src/app.html',
     }),
-    new OptimizeCssAssets()
+    new OptimizeCssAssets(),
   ]
 
   if (IS_PROD) {
@@ -149,12 +161,12 @@ export const plugins = (() => {
         compress: {
           screw_ie8: true,
           warnings: true,
-        }
+        },
       }),
       // Prevents emitting assets that include errors in them
       // Do not include in non PROD environments otherwise lint
       // warnings will fail to emit anything to the build
-      new webpack.NoErrorsPlugin()
+      new webpack.NoErrorsPlugin(),
     ])
   } else {
     currentPlugins = currentPlugins.concat([
@@ -162,9 +174,9 @@ export const plugins = (() => {
       // stylelint-config-standard
       new StylelintPlugin({
         syntax: 'scss',
-        files: ['**/*.css']
+        files: ['**/*.css'],
       }),
-      new WebpackNotifierPlugin()
+      new WebpackNotifierPlugin(),
     ])
   }
   return currentPlugins
@@ -178,12 +190,12 @@ export const rules = (() => {
       test: /\.jsx?$/,
       exclude: /node_modules/,
       loader: 'babel',
-      options: babelOptions
+      options: babelOptions,
     },
     // Convert from sass -> postcss -> css -> style
     {
       test: /\.s?css$/,
-      loader: styleLoader
+      loader: styleLoader,
     },
     {
       // Image assets
@@ -196,8 +208,8 @@ export const rules = (() => {
       // [name] [hash] [ext] In the case below, we are telling
       // the loader to emit the file in the static directory
       // using the file name followed by the hash and extension.
-      loader: 'url?limit=1&name=static/[name]-[hash].[ext]'
-    }
+      loader: 'url?limit=1&name=static/[name]-[hash].[ext]',
+    },
   ]
 
   if (!IS_PROD) {
@@ -206,7 +218,7 @@ export const rules = (() => {
       test: /\.jsx?$/,
       exclude: /node_modules/,
       enforce: 'pre',
-      loader: 'eslint'
+      loader: 'eslint',
     }])
   }
 
@@ -216,3 +228,22 @@ export const rules = (() => {
 // See https://webpack.github.io/docs/configuration.html#devtool for
 // different options
 export const devtool = IS_PROD ? 'cheap-module-source-map' : 'source-map'
+
+export const devServer = {
+  stats: {
+    colors: true,
+    reasons: true,
+    warnings: true,
+    publicPath: true,
+    errors: true,
+    errorDetails: true,
+    source: false,
+    children: false,
+    modules: false,
+    hash: false,
+    version: false,
+    timings: false,
+    assets: true,
+    chunks: false,
+  },
+}
